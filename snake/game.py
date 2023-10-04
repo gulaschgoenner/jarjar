@@ -18,7 +18,17 @@ WINDOW_SIZE = (GRID_WIDTH * 20, GRID_HEIGHT * 20)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 
 clock = pygame.time.Clock()
-players = ["Player One", "Player Two", "Barack Obama", "Spongebob"]
+players = ["Player One", "Player Two", "Barack Obama"]
+def generate_name():
+    adjectives = ['Red', 'Blue', 'Green', 'Mysterious', 'Silent', 'Golden', 'Clever', 'Lucky']
+    nouns = ['Panda', 'Stone', 'Dragon', 'Phoenix', 'Serpent', 'Wanderer', 'Warrior', 'Sorcerer']
+
+    random_adjective = random.choice(adjectives)
+    random_noun = random.choice(nouns)
+
+    return f'{random_adjective} {random_noun}'
+
+players.extend([generate_name() for _ in range(20)])
 selectedPlayer = 0
 
 
@@ -60,7 +70,6 @@ def insert_score(name, score):
         # Verbindung schließen
         cursor.close()
         connection.close()
-
 
 def game_over(score):
     global selectedPlayer
