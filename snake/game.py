@@ -63,13 +63,13 @@ while not game_over:
         if event.type == pygame.QUIT:
             game_over = True
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.W and direction != DOWN:
+            if event.key == pygame.K_w and direction != DOWN:
                 direction = UP
-            elif event.key == pygame.S and direction != UP:
+            elif event.key == pygame.K_s and direction != UP:
                 direction = DOWN
-            elif event.key == pygame.A and direction != RIGHT:
+            elif event.key == pygame.K_a and direction != RIGHT:
                 direction = LEFT
-            elif event.key == pygame.D and direction != LEFT:
+            elif event.key == pygame.K_d and direction != LEFT:
                 direction = RIGHT
 
     move_snake(snake, direction)
