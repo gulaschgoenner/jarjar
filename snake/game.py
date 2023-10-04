@@ -1,5 +1,6 @@
 import pygame
 import random
+import mysql.connector
 
 # Konstanten
 GRID_WIDTH = 20
@@ -25,9 +26,44 @@ class Direction:
     LEFT = (-1, 0)
     RIGHT = (1, 0)
 
+# Datenbankkrampf
+def insert_score(name, score):
+    try:
+        # Verbindung zur MySQL-Datenbank herstellen
+        connection = mysql.connector.connect(
+            host='localhost',
+            user='guest',
+            password='1234',
+            database='snake'
+        )
+
+        # Cursor erstellen
+        cursor = connection.cursor()
+
+        # SQL-Befehl mit Platzhaltern ausführen
+        sql = "INSERT INTO Scores (name, score) VALUES (%s, %s)"
+        values = (name, score)
+        cursor.execute(sql, values)
+
+        # Transaktion bestätigen
+        connection.commit()
+
+        print(f'Datensatz wurde erfolgreich eingefügt: ({name}, {score})')
+
+    except Exception as error:
+        print(f'Fehler beim Einfügen des Datensatzes: {error}')
+
+    finally:
+        # Verbindung schließen
+        cursor.close()
+        connection.close()
+
+
 
 # Funktion für das Spielende
 def game_over(score):
+    insert_score("Beispiel Name", score)
+
     font = pygame.font.Font(None, 36)
     game_over_text = font.render("Game Over", True, (255, 255, 255))
     game_over_rect = game_over_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 - 50))
