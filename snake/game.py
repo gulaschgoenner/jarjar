@@ -18,6 +18,8 @@ WINDOW_SIZE = (GRID_WIDTH * 20, GRID_HEIGHT * 20)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 
 clock = pygame.time.Clock()
+players = ["Player One", "Player Two", "Barack Obama", "Spongebob"]
+selectedPlayer = 0
 
 
 class Direction:
@@ -25,6 +27,7 @@ class Direction:
     DOWN = (0, 1)
     LEFT = (-1, 0)
     RIGHT = (1, 0)
+
 
 # Datenbankkrampf
 def insert_score(name, score):
@@ -48,7 +51,7 @@ def insert_score(name, score):
         # Transaktion bestätigen
         connection.commit()
 
-        print(f'Datensatz wurde erfolgreich eingefügt: ({name}, {score})')
+        print(f'Datensatz wurde erfolgreich eingefügt: ("{name}", {score})')
 
     except Exception as error:
         print(f'Fehler beim Einfügen des Datensatzes: {error}')
@@ -59,13 +62,11 @@ def insert_score(name, score):
         connection.close()
 
 
-
-# Funktion für das Spielende
 def game_over(score):
-    insert_score("Beispiel Name", score)
+    global selectedPlayer
 
     font = pygame.font.Font(None, 36)
-    game_over_text = font.render("Game Over", True, (255, 255, 255))
+    game_over_text = font.render("Game Over", True, (255, 0, 0))
     game_over_rect = game_over_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 - 50))
     screen.blit(game_over_text, game_over_rect)
 
@@ -78,7 +79,19 @@ def game_over(score):
     score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))
     score_rect = score_text.get_rect(center=(50, 20))
     screen.blit(score_text, score_rect)
+
+    player_font = pygame.font.Font(None, 24)
+    player_text = player_font.render(f"{players[selectedPlayer]}", True, (255, 255, 255))
+    player_rect = player_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50))
+    screen.blit(player_text, player_rect)
+
+    insert_score_text = retry_font.render("Save (Down)", True, (255, 255, 255))
+    insert_score_rect = insert_score_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 100))
+    screen.blit(insert_score_text, insert_score_rect)
+
     pygame.display.flip()
+
+    player_font = pygame.font.Font(None, 24)
 
     while True:
         for event in pygame.event.get():
@@ -88,9 +101,37 @@ def game_over(score):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
                     main()
+                elif event.key == pygame.K_s:
+                    insert_score(players[selectedPlayer], score)
+                elif event.key == pygame.K_a:
+                    selectedPlayer = (selectedPlayer - 1) % len(players)
+                elif event.key == pygame.K_d:
+                    selectedPlayer = (selectedPlayer + 1) % len(players)
 
+        # Fill the screen with background color
+        screen.fill(BACKGROUND_COLOR_1)
+        for y in range(GRID_HEIGHT):
+            for x in range(GRID_WIDTH):
+                color = BACKGROUND_COLOR_2 if (x + y) % 2 == 0 else BACKGROUND_COLOR_1
+                pygame.draw.rect(screen, color, (x * 20, y * 20, 20, 20))
 
-# Hauptfunktion für das Spiel
+        screen.blit(game_over_text, game_over_rect)
+
+        screen.blit(retry_text, retry_rect)
+
+        screen.blit(score_text, score_rect)
+
+        # Render player text
+        player_text = player_font.render(f"{players[selectedPlayer]}", True, (255, 255, 255))
+        player_rect = player_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50))
+        screen.blit(player_text, player_rect)
+
+        # Render insert score text
+        screen.blit(insert_score_text, insert_score_rect)
+
+        # Update the display
+        pygame.display.flip()
+
 def main():
     snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]
     direction = Direction.RIGHT
@@ -112,7 +153,7 @@ def main():
                         direction = Direction.DOWN
                 elif event.key == pygame.K_a:
                     if direction != Direction.RIGHT:
-                       direction = Direction.LEFT
+                        direction = Direction.LEFT
                 elif event.key == pygame.K_d:
                     if direction != Direction.LEFT:
                         direction = Direction.RIGHT
