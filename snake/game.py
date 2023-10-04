@@ -41,7 +41,7 @@ def insert_score(name, score):
         cursor = connection.cursor()
 
         # SQL-Befehl mit Platzhaltern ausführen
-        sql = "INSERT INTO Scores (name, score) VALUES (%s, %s)"
+        sql = "INSERT INTO scores (name, score) VALUES (%s, %s)"
         values = (name, score)
         cursor.execute(sql, values)
 
