@@ -81,7 +81,7 @@ def game_over(score):
     screen.blit(score_text, score_rect)
 
     player_font = pygame.font.Font(None, 24)
-    player_text = player_font.render(f"{players[selectedPlayer]}", True, (255, 255, 255))
+    player_text = player_font.render(f"< {players[selectedPlayer]} >", True, (255, 255, 255))
     player_rect = player_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50))
     screen.blit(player_text, player_rect)
 
@@ -122,7 +122,7 @@ def game_over(score):
         screen.blit(score_text, score_rect)
 
         # Render player text
-        player_text = player_font.render(f"{players[selectedPlayer]}", True, (255, 255, 255))
+        player_text = player_font.render(f"< {players[selectedPlayer]} >", True, (255, 255, 255))
         player_rect = player_text.get_rect(center=(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50))
         screen.blit(player_text, player_rect)
 
